@@ -7,6 +7,24 @@ public class Main
     public static void main(String[] args)
     {
     	
+    	int c=1;
+        Scanner sc = new Scanner(System.in);
+        int p;
+     
+        System.out.println("Enter the Values... ");
+        System.out.print("Enter the number of processes(P): ");
+        p=sc.nextInt();
+        System.out.println();
+        int process[]=new int[p*2];
+        for(int i=0;i<p*2;i=i+2) {
+        	System.out.println("--For Process P"+i+"--\nEnter Arrival time and Burst time:");
+        	process[i]=sc.nextInt();
+        	process[i+1]=sc.nextInt();
+        }
+        System.out.print("Enter the time quantum: ");
+		int t=sc.nextInt();
+		System.out.println();
+    	
     	System.out.println("+-------------------------------------------------+");
     	System.out.println("|----Welcome to the CPU Scheduling Calculator-----|");
     	System.out.println("|-----------------Press 1 for FCFS----------------|");
@@ -21,43 +39,38 @@ public class Main
         System.out.println("+-------------------------------------------------+");
        
         
-        Scanner sc = new Scanner(System.in);
+        
         System.out.print("Your choice: ");
         int choice = sc.nextInt();
         System.out.println();
-        int p;
+       
         
         while(choice!=5) {
+        
+        	
         	switch(choice) {
         	case 1:
         		CPUScheduler fcfs = new FirstComeFirstServe();
-        		System.out.print("Enter the number of processes: ");
-        		p=sc.nextInt();
-        		System.out.println();
-        		for(int i=1;i<=p;i++) {
-        			System.out.println("--For Process P"+i+"--\nEnter Arrival time and Burst time:");
-        			int a=sc.nextInt();
-        			int b=sc.nextInt();
-        			String pr="P"+i;
-        			fcfs.add(new Row(pr, a, b));
+        		c=1;
+        		for(int i=0;i<p*2;i=i+2) {
+        			String pr="P"+c;
+        			fcfs.add(new Row(pr, process[i], process[i+1]));
+        			c++;
         			
         		}
         		fcfs.process();
         	    display(fcfs);
+        	    
         		break;
         	
         	
         case 2:
         	CPUScheduler sjf = new ShortestJobFirst();
-        	System.out.print("Enter the number of processes: ");
-    		p=sc.nextInt();
-    		System.out.println();
-    		for(int i=1;i<=p;i++) {
-    			System.out.println("--For Process P"+i+"--\nEnter Arrival time and Burst time:");
-    			int a=sc.nextInt();
-    			int b=sc.nextInt();
-    			String pr="P"+i;
-    			sjf.add(new Row(pr, a, b));
+        	c=1;
+    		for(int i=0;i<p*2;i=i+2) {
+    			String pr="P"+c;
+    			sjf.add(new Row(pr, process[i], process[i+1]));
+    			c++;
     			
     		}
     		sjf.process();
@@ -66,15 +79,11 @@ public class Main
     		
         case 3:
         	CPUScheduler srt = new ShortestRemainingTime();
-        	System.out.print("Enter the number of processes: ");
-    		p=sc.nextInt();
-    		System.out.println();
-    		for(int i=1;i<=p;i++) {
-    			System.out.println("--For Process P"+i+"--\nEnter Arrival time and Burst time:");
-    			int a=sc.nextInt();
-    			int b=sc.nextInt();
-    			String pr="P"+i;
-    			srt.add(new Row(pr, a, b));
+        	c=1;
+    		for(int i=0;i<p*2;i=i+2) {
+    			String pr="P"+c;
+    			srt.add(new Row(pr, process[i], process[i+1]));
+    			c++;
     			
     		}
     		srt.process();
@@ -83,21 +92,16 @@ public class Main
     	
         case 4:
         	CPUScheduler rr = new RoundRobin();
-        	System.out.print("Enter the number of processes: ");
-    		p=sc.nextInt();
-    		System.out.println();
-    		System.out.print("Enter the time quantum: ");
-    		int t=sc.nextInt();
-    		System.out.println();
+        	
     		rr.setTimeQuantum(t);
-    		for(int i=1;i<=p;i++) {
-    			System.out.println("--For Process P"+i+"--\nEnter Arrival time and Burst time:");
-    			int a=sc.nextInt();
-    			int b=sc.nextInt();
-    			String pr="P"+i;
-    			rr.add(new Row(pr, a, b));
+    		c=1;
+    		for(int i=0;i<p*2;i=i+2) {
+    			String pr="P"+c;
+    			rr.add(new Row(pr, process[i], process[i+1]));
+    			c++;
     			
     		}
+
     		rr.process();
             display(rr);
     		break;
@@ -134,8 +138,9 @@ public class Main
            
         
         }
+        getMin(process,p,t);
         
-        System.out.print("Exiting the program");
+        System.out.print("\n\nExiting the program");
         try {
             for (int i = 0; i < 6; i++) {
                 Thread.sleep(1000);
@@ -151,7 +156,69 @@ public class Main
     }
     
     
-    
+    public static void getMin(int process[],int p, int t) {
+    	double min=Integer.MAX_VALUE;
+    	String res="";
+    	int c=1;
+    	CPUScheduler fcfs = new FirstComeFirstServe();
+		for(int i=0;i<p*2;i=i+2) {
+			String pr="P"+c;
+			fcfs.add(new Row(pr, process[i], process[i+1]));
+			c++;
+			
+		}
+		fcfs.process();
+		if(min>fcfs.getAverageWaitingTime()) {
+			min=fcfs.getAverageWaitingTime();
+			res="Min average wating time is given by FCFS";
+		}
+		CPUScheduler sjf = new ShortestJobFirst();
+		c=1;
+		for(int i=0;i<p*2;i=i+2) {
+			String pr="P"+c;
+			sjf.add(new Row(pr, process[i], process[i+1]));
+			c++;
+			
+		}
+		sjf.process();
+		if(min>sjf.getAverageWaitingTime()) {
+			min=sjf.getAverageWaitingTime();
+			res="Min average wating time is given by SJF";
+		}
+		CPUScheduler srt = new ShortestRemainingTime();
+    	c=1;
+		for(int i=0;i<p*2;i=i+2) {
+			String pr="P"+c;
+			srt.add(new Row(pr, process[i], process[i+1]));
+			c++;
+			
+		}
+		srt.process();
+		if(min>srt.getAverageWaitingTime()) {
+			min=srt.getAverageWaitingTime();
+			res="Min average wating time is given by SRT";
+		}
+		CPUScheduler rr = new RoundRobin();
+    	
+		rr.setTimeQuantum(t);
+		c=1;
+		for(int i=0;i<p*2;i=i+2) {
+			String pr="P"+c;
+			rr.add(new Row(pr, process[i], process[i+1]));
+			c++;
+			
+		}
+
+		rr.process();
+		if(min>rr.getAverageWaitingTime()) {
+			min=rr.getAverageWaitingTime();
+			res="Min average waiting time is given by RR";
+		}
+		
+		System.out.printf(res+" :%.2f",min);
+		
+    	
+    }
     public static void display(CPUScheduler object)
     {
         System.out.println("Process\tAT\tBT\tWT\tTAT");
@@ -174,6 +241,8 @@ public class Main
             }
         }
         
-        System.out.println("\n\nAverage WT: " + object.getAverageWaitingTime() + "\nAverage TAT: " + object.getAverageTurnAroundTime());
+        System.out.printf("\n\nAverage WT: %.2f \nAverage TAT: %.2f", object.getAverageWaitingTime(),  object.getAverageTurnAroundTime());
     }
+    
+    
 }
