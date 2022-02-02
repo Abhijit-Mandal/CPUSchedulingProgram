@@ -18,4 +18,4 @@ back of the Ready queue, and a newly arrived process gets placed at the back of 
 well. The output should be displayed in a formatted way for clarity of understanding and visual.
 
 ### Output Example: ###
-![](https://i.imgur.com/1iQcq2sl.png)
+![](https://i.imgur.com/W1rv337l.png)
